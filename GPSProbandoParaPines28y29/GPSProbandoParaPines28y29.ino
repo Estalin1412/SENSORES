@@ -1,5 +1,10 @@
 #include <TinyGPSPlus.h>
 
+/*
+  TinyGPSPlusPlus by Ress
+
+*/
+
 // Definir los pines y la velocidad del GPS
 static const int RXPin = 28, TXPin = 29;
 static const uint32_t GPSBaud = 4800;
