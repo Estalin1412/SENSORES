@@ -1,3 +1,4 @@
+# Cuadro para CADENA EN SD
 | Num  | Rango | Descripción                                                    |
 |------|-------|----------------------------------------------------------------|
 | 1    | 0-7   | Recorder Type Indicator (string)                               |

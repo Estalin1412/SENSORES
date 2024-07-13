@@ -24,69 +24,27 @@ Adafruit MAX3185 Library by Adfruit
   TinyGPSPlusPlus by Ress
 */
 #include <TinyGPSPlus.h>
-
-/*--------------------------------------------------------------------VARIABLES------------------------------------------------------------*/
-//Para BME280
-#define SEALEVELPRESSURE_HPA ( 1013.25)
-//Para INA219
-#define RREF 430.0
-#define RNOMINAL 100.0
-//Para GPS
-static const double LONDON_LAT = 51.508131, LONDON_LON = -0.128002;
-/*Definimos objetos*/
-Adafruit_INA219 SensorCorriente_Ina219;
-
-Adafruit_BME280 Sensor01Bme280;
-
-Adafruit_MAX31865 SensorMAX3185 = Adafruit_MAX31865(10);
-
-TinyGPSPlus gps;
-/*-----------------------------------------PROTOTIPOS DE FUNCIONES-------------------------------------------------------------------------*/
-//Prototipos de INA219
-void FunIniciarINA219(Adafruit_INA219 & ina219);
-void FunObtenerDatosINA219( Adafruit_INA219 &  ina219);
-
-void FunIniciarINA219(Adafruit_INA219 & ina219, HardwareSerial &);
-void FunObtenerDatosINA219( Adafruit_INA219 &  ina219, HardwareSerial &);
-//Prototipos de BME280
-void FunIniciarBME280(Adafruit_BME280 & bme);
-void FunObtenerDatosBME280(Adafruit_BME280 & bme);
-
-void FunIniciarBME280(Adafruit_BME280 & bme, HardwareSerial &);
-void FunObtenerDatosBME280(Adafruit_BME280 & bme, HardwareSerial &);
-//Prototipos de MAX3185
-void FunIniciarMAX3185(Adafruit_MAX31865 & thermo);
-void FunObtenerDatosMAX3185(Adafruit_MAX31865 & thermo);
-
-void FunIniciarMAX3185(Adafruit_MAX31865 & thermo, HardwareSerial &);
-void FunObtenerDatosMAX3185(Adafruit_MAX31865 & thermo, HardwareSerial &);
-//Prototipos de GPS
-static void printStr(const char *str, int len);
-static void printDateTime(TinyGPSDate &d, TinyGPSTime &t);
-static void printFloat(float val, bool valid, int len, int prec);
-static void printInt(unsigned long val, bool valid, int len);
-static void smartDelay(unsigned long ms);
-
-static void printStr(const char *str, int len, HardwareSerial &);
-static void printDateTime(TinyGPSDate &d, TinyGPSTime &t, HardwareSerial &);
-static void printFloat(float val, bool valid, int len, int prec, HardwareSerial &);
-static void printInt(unsigned long val, bool valid, int len, HardwareSerial &);
-//Prototipos comunicacion entre teensy
-void FunComunicacionTeensyTeensy(HardwareSerial &Serialx);
-void FunComunicacionTeensyTeensy(HardwareSerial &Serialx, HardwareSerial & Serialy);
+//Encabezado de Funciones
+#include "EncabezadoDeFuncionesOBC.h"
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /*................................................................VOID_SETUP.......................................................*/
 void setup(){ 
   // put your setup code here, to run once:
   Serial.begin(4800);
+  
   //Para comunicación entre teensy-plataforma pin 0 y 1
   Serial1.begin(4800);
   Serial.println("Init Serial...");
+  
   //Para comunicación (Este maestro)teensy-teensy 34 y 35
   Serial8.begin(4800);
+  
+  //ParaGPS
   Serial7.begin(4800);
+  
   //Para BME280
   Wire2.begin();
-  //Para GPS
+
   //Funciones
   FunIniciarBME280(Sensor01Bme280, Serial1);
   FunIniciarINA219(SensorCorriente_Ina219, Serial1);
@@ -103,6 +61,9 @@ void loop() {
   
   delay(1000);
 }
+
+
+
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /*----------------------------------FuncionesParaIna219--------------------------------------------------------------------*/
 void FunIniciarINA219(Adafruit_INA219 & ina219){
@@ -110,9 +71,6 @@ void FunIniciarINA219(Adafruit_INA219 & ina219){
   // Wire2.setSDA(25);
 
   while(!ina219.begin(&Wire2))  delay(10);
-  
-  Serial.println("INA219 conect succefull!!");
-
   ina219.setCalibration_32V_2A();
 
 }
@@ -143,8 +101,6 @@ void FunIniciarINA219(Adafruit_INA219 & ina219, HardwareSerial & Serialx){
   // Wire2.setSCL(24);
   // Wire2.setSDA(25);
   while(!ina219.begin(&Wire2))  delay(10);
-  
-  Serialx.println("INA219 conect succefull!!");
 
   ina219.setCalibration_32V_2A();
 
@@ -173,7 +129,6 @@ void FunObtenerDatosINA219( Adafruit_INA219 &  ina219, HardwareSerial & Serialx)
 }
 /*-------------------------------------------FuncionesParaBME280-----------------------------------------------------*/
 void FunIniciarBME280(Adafruit_BME280 & bme){
-  Serial.println("Init BME280...");
   while(! bme.begin(0x76, &Wire2)) delay(10);
   return;
 }
@@ -204,7 +159,6 @@ void FunObtenerDatosBME280(Adafruit_BME280 & bme)
 }
 
 void FunIniciarBME280(Adafruit_BME280 & bme, HardwareSerial &Serialx){
-  Serialx.println("Init BME280...");
   while(! bme.begin(0x76, &Wire2)) delay(10);
   return;
 }
@@ -483,7 +437,6 @@ void FunActivarGPS6mv2(HardwareSerial & Serialx)
 
   if ( millis() > 5000 && gps.charsProcessed() < 10 ) Serial.println(F("No GPS data received: check wiring"));
   
-
 }
 
 /*-------------------------FUNCIONES-PARA-COMUNICACION-ENTRE-TEENSYS----------------------------------*/
