@@ -61,6 +61,27 @@ void FunObtenerDatosINA219( Adafruit_INA219 &  ina219, HardwareSerial & Serialx)
   Serialx.println("");
   return;
 }
+//Para retornar Strings
+String FunObtenerStringDatosINA219( Adafruit_INA219 &  ina219){
+  float shuntvoltage = 0;
+  float busvoltage = 0;
+  float current_mA = 0;
+  float loadvoltage = 0;
+  float power_mW = 0;
+
+  shuntvoltage = ina219.getShuntVoltage_mV();
+  busvoltage = ina219.getBusVoltage_V();
+  current_mA = ina219.getCurrent_mA();
+  power_mW = ina219.getPower_mW();
+  loadvoltage = busvoltage + (shuntvoltage / 1000);
+  
+  String datos = "Bus Voltage: " + String(busvoltage) + " V\n";
+  datos += "Shunt Voltage: " + String(shuntvoltage) + " mV\n";
+  datos += "Load Voltage: " + String(loadvoltage) + " V\n";
+  datos += "Current: " + String(current_mA) + " mA\n";
+  datos += "Power: " + String(power_mW) + " mW\n";
+  return datos;
+}
 /*-------------------------------------------FuncionesParaBME280-----------------------------------------------------*/
 void FunIniciarBME280(Adafruit_BME280 & bme){
   while(! bme.begin(0x76, &Wire2)) delay(10);
@@ -121,6 +142,17 @@ void FunObtenerDatosBME280(Adafruit_BME280 & bme, HardwareSerial & Serialx)
   Serialx.println();
 
 }
+//Para retornar String
+String FunObtenerStringDatosBME280(Adafruit_BME280 & bme)
+{
+  bme.takeForcedMeasurement();
+
+  String datos ="Temperature = " + String( bme.readTemperature() )+" *C\n";
+  datos += "Pressure = "+String( bme.readPressure()/ 100.0F ) + " hPa\n";
+  datos += "Approx. Altitude = "+ String( bme.readAltitude( SEALEVELPRESSURE_HPA) )+" m\n";
+  datos += "Humidity = "+ String( bme.readHumidity() ) +" %\n";
+  return datos;
+}
 /*-------------------------------------------------Funciones-para-MAX3185------------------------------------------------------------------*/
 void FunIniciarMAX3185(Adafruit_MAX31865 & thermo){
   thermo.begin(MAX31865_2WIRE);
@@ -144,6 +176,14 @@ void FunObtenerDatosMAX3185(Adafruit_MAX31865 & thermo, HardwareSerial & Serialx
   Serialx.print("temp: ");
   Serialx.println(temp);
 
+}
+//Para retornar String
+String FunObtenerStringDatosMAX3185(Adafruit_MAX31865 & thermo){
+
+  float temp = thermo.temperature(RNOMINAL, RREF);
+  String datos ="temp: ";
+  datos +=  String(temp);
+  return datos;
 }
 /*------------------------------FUNCIONES-PARA-GPS-gps6mv2--------------------------------------------*/
 static void smartDelay(unsigned long ms) {
