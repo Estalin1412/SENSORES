@@ -21,6 +21,9 @@ TinyGPSPlus gps;
 /*-----------------------------------------PROTOTIPOS DE FUNCIONES-------------------------------------------------------------------------*/
 //Prototipos de INA219
 void FunIniciarINA219(Adafruit_INA219 & ina219);
+/*
+
+*/
 void FunObtenerDatosINA219( Adafruit_INA219 &  ina219);
 
 void FunIniciarINA219(Adafruit_INA219 & ina219, HardwareSerial &);
