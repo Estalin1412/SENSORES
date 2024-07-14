@@ -22,7 +22,8 @@ TinyGPSPlus gps;
 //Prototipos de INA219
 void FunIniciarINA219(Adafruit_INA219 & ina219);
 /*
-
+Verificación de conexion; se usa wire2
+Calibra datos para 5V
 */
 void FunObtenerDatosINA219( Adafruit_INA219 &  ina219);
 
