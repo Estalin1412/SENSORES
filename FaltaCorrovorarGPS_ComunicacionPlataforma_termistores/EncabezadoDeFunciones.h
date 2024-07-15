@@ -36,16 +36,9 @@ Calibra datos para 5V
 */
 void FunObtenerDatosINA219( Adafruit_INA219 &  ina219);
 
-void FunIniciarINA219(Adafruit_INA219 & ina219, HardwareSerial &);
-void FunObtenerDatosINA219( Adafruit_INA219 &  ina219, HardwareSerial &);
-
 String FunObtenerStringDatosINA219( Adafruit_INA219 &  ina219);
 //Prototipos de BME280
 void FunIniciarBME280(Adafruit_BME280 & bme);
-void FunObtenerDatosBME280(Adafruit_BME280 & bme);
-
-void FunIniciarBME280(Adafruit_BME280 & bme, HardwareSerial &);
-void FunObtenerDatosBME280(Adafruit_BME280 & bme, HardwareSerial &);
 
 String FunObtenerStringDatosBME280(Adafruit_BME280 & bme);
 //Prototipos de MAX3185
@@ -55,13 +48,14 @@ String FunObtenerStringDatosMAX31865(Adafruit_MAX31865 & thermo);
 String FunObtenerStringDatosGPS6mv2();
 static void smartDelay(unsigned long ms);
 
-static void printStr(const char *str, int len, HardwareSerial &);
-static void printDateTime(TinyGPSDate &d, TinyGPSTime &t, HardwareSerial &);
-static void printFloat(float val, bool valid, int len, int prec, HardwareSerial &);
-static void printInt(unsigned long val, bool valid, int len, HardwareSerial &);
+static void printStr(const char *str, int len, String &);
+static void printDateTime(TinyGPSDate &d, TinyGPSTime &t, String &);
+static void printFloat(float val, bool valid, int len, int prec, String &);
+static void printInt(unsigned long val, bool valid, int len, String &);
 //Prototipos comunicacion entre teensy
-void FunComunicacionTeensyTeensy(HardwareSerial &Serialx);
-void FunComunicacionTeensyTeensy(HardwareSerial &Serialx, HardwareSerial & Serialy);
+String FunObtenerStringDatosComunicacionTeensyTeensy(HardwareSerial &Serialx)
 //Prototipos para corriente
 void FunIniciarACS712(ACS712 & ACS);
 String FunObtenerStringDatosACS712( ACS712 & ACS);
+//FUNCIONE CREADAS PARA FACILITAR OPERACIONES
+void FuncionCorregirCaracter(String & cadena, int tam);

@@ -22,7 +22,7 @@ void setup()
 void loop()
 {
   String Corriente = "";
-  FunObtenerStringDatosACS712(ACS, Corriente);
+  Corriente += FunObtenerStringDatosACS712(ACS);
   Serial.println(Corriente);
   delay(1000);
 }
@@ -30,8 +30,8 @@ void loop()
 void FunIniciarACS712(ACS712 & ACS){
   ACS.autoMidPoint();
 }
-String FunObtenerStringDatosACS712( ACS712 & ACS, String & cadena){
-  cadena += String(ACS.mA_DC(),1);
+String FunObtenerStringDatosACS712( ACS712 & ACS){
+  String cadena = String(ACS.mA_DC(),1);
   return cadena;
 }
 //  -- END OF FILE --

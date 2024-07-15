@@ -1,4 +1,27 @@
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/*-------------------------------------------------Funciones-para-MAX3185------------------------------------------------------------------*/
+void FunIniciarMAX31865(Adafruit_MAX31865 & thermo){
+  //Initialize the MAX31865 and set the wire configuration
+thermo.begin(MAX31865_3WIRE); // Use MAX31865_2WIRE or MAX31865_4WIRE 2 cables y 4 cables respectivamente
+return ;
+}
+
+String FunObtenerStringDatosMAX31865(Adafruit_MAX31865 & thermo){
+  String datos;
+  // Read the raw RTD value
+uint16_t rtd = thermo.readRTD();
+
+// Calculate the ratio of the RTD value
+float ratio = rtd / 32768.0;
+
+// Calculate and print the temperature
+float temperature = thermo.temperature(RNOMINAL, RREF);
+//7 caracteres include (.) y (,)
+datos += "Temperature: " + String(temperature) + ",";// °C
+
+return datos;
+}
+
 /*----------------------------------FuncionesParaIna219--------------------------------------------------------------------*/
 void FunIniciarINA219(Adafruit_INA219 & ina219){
   // Wire2.setSCL(24);
@@ -21,12 +44,23 @@ void FunObtenerDatosINA219( Adafruit_INA219 &  ina219){
   current_mA = ina219.getCurrent_mA();
   power_mW = ina219.getPower_mW();
   loadvoltage = busvoltage + (shuntvoltage / 1000);
+
+  /*}
   
-  Serial.print("Bus Voltage:   "); Serial.print(busvoltage); Serial.println(" V");
-  Serial.print("Shunt Voltage: "); Serial.print(shuntvoltage); Serial.println(" mV");
-  Serial.print("Load Voltage:  "); Serial.print(loadvoltage); Serial.println(" V");
+4 0-31 INA219-Measurement of bus voltage 
+
+4 0-31 INA219-Measurement of voltage across the resistor shunt 
+
+4 0-31 INA219-Measurement of load voltage 
+
+5 0-39 INA219-Measurement of current consumption Motor Power System 
+
+5 0-39 INA219-Measurement of consumption current Heater power supply system(ASCII) 
+  */
+  
+  Serial.print("Load Voltage:  "); Serial.print(loadvoltage);Serial.println(" V");
   Serial.print("Current:       "); Serial.print(current_mA); Serial.println(" mA");
-  Serial.print("Power:         "); Serial.print(power_mW); Serial.println(" mW");
+  Serial.print("Power:         "); Serial.print(power_mW);   Serial.println(" mW");
   Serial.println("");
   return;
 }
@@ -67,19 +101,18 @@ String FunObtenerStringDatosINA219( Adafruit_INA219 &  ina219){
   float busvoltage = 0;
   float current_mA = 0;
   float loadvoltage = 0;
-  float power_mW = 0;
+  //float power_mW = 0;
 
   shuntvoltage = ina219.getShuntVoltage_mV();
   busvoltage = ina219.getBusVoltage_V();
   current_mA = ina219.getCurrent_mA();
-  power_mW = ina219.getPower_mW();
+  //power_mW = ina219.getPower_mW();
   loadvoltage = busvoltage + (shuntvoltage / 1000);
   
-  String datos = "Bus Voltage: " + String(busvoltage) + " V\n";
-  datos += "Shunt Voltage: " + String(shuntvoltage) + " mV\n";
-  datos += "Load Voltage: " + String(loadvoltage) + " V\n";
-  datos += "Current: " + String(current_mA) + " mA\n";
-  datos += "Power: " + String(power_mW) + " mW\n";
+  String datos ="Load Voltage: " + String(loadvoltage)+ "," ;//" V\n" , 
+  datos += "Current: " + String(current_mA) + "," ;           //" mA\n";
+
+  //datos += "Power: " + String(power_mW) + ",";               //" mW\n";
   return datos;
 }
 /*-------------------------------------------FuncionesParaBME280-----------------------------------------------------*/
@@ -147,33 +180,12 @@ String FunObtenerStringDatosBME280(Adafruit_BME280 & bme)
 {
   bme.takeForcedMeasurement();
 
-  String datos ="Temperature = " + String( bme.readTemperature() )+" *C\n";
-  datos += "Pressure = "+String( bme.readPressure()/ 100.0F ) + " hPa\n";
-  datos += "Approx. Altitude = "+ String( bme.readAltitude( SEALEVELPRESSURE_HPA) )+" m\n";
-  datos += "Humidity = "+ String( bme.readHumidity() ) +" %\n";
+  String datos ="Temperature = " + String( bme.readTemperature() ) + ",";//"°C"
+  datos += "Humidity = " + String( bme.readHumidity() ) + ",";           //" %"
+  datos += "Pressure = " + String( bme.readPressure()/ 100.0F ) + ",";   // " hPa"
   return datos;
 }
-/*-------------------------------------------------Funciones-para-MAX3185------------------------------------------------------------------*/
-void FunIniciarMAX31865(Adafruit_MAX31865 & thermo){
-  //Initialize the MAX31865 and set the wire configuration
-thermo.begin(MAX31865_3WIRE); // Use MAX31865_2WIRE or MAX31865_4WIRE 2 cables y 4 cables respectivamente
-return ;
-}
 
-String FunObtenerStringDatosMAX31865(Adafruit_MAX31865 & thermo){
-  String datos;
-  // Read the raw RTD value
-uint16_t rtd = thermo.readRTD();
-
-// Calculate the ratio of the RTD value
-float ratio = rtd / 32768.0;
-
-// Calculate and print the temperature
-float temperature = thermo.temperature(RNOMINAL, RREF);
-datos += "Temperature = " + String(temperature) +"\n";
-
-return datos;
-}
 /*------------------------------FUNCIONES-PARA-GPS-gps6mv2--------------------------------------------*/
 static void smartDelay(unsigned long ms) {
   unsigned long start = millis();
@@ -422,5 +434,38 @@ void FunComunicacionTeensyTeensy(HardwareSerial &Serialx, HardwareSerial & Seria
     // Imprime los datos en el monitor serie
     Serialy.print("Received: ");
     Serialy.println(received);
+  }
+}
+
+String FunObtenerStringDatosComunicacionTeensyTeensy(HardwareSerial &Serialx){
+    if (Serialx.available() > 0){
+    // Lee los datos recibidos
+    String received = Serialx.readStringUntil('\n');
+    
+    // Imprime los datos en el monitor serie
+    return received;
+    }
+    return "";
+
+}
+
+
+/*---------------------------------FUNCIONES_PARA_ACS712--------------------------------------------*/
+void FunIniciarACS712(ACS712 & ACS){
+  ACS.autoMidPoint();
+}
+String FunObtenerStringDatosACS712( ACS712 & ACS){
+  String cadena = String(ACS.mA_DC(),1);
+  return cadena;
+}
+//////////////////////////////////////////////////////////
+//FUNCIONES CUALQUIERA
+void FuncionCorregirCaracter(String & cadena, int tam){
+  int i = tam - cadena.length();
+  int j = 0;
+  while (j < i)
+  {
+    cadena += " ";
+    j++;
   }
 }
