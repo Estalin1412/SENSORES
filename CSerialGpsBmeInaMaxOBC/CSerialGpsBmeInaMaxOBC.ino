@@ -1,14 +1,17 @@
 /*---------------------------------------------------LIBRERIAS---------------------------------------------------------------------------*/
 #include <Wire.h>
+
 /*Libreria
 Adafruit INA219 by adafruit
 */
 #include <Adafruit_INA219.h>
+
 /*Libreria
 Adafruit BME280 Library by Adafruit
 */
 #include <Adafruit_Sensor.h>
 #include <Adafruit_BME280.h>
+
 /*Libreria
 Adafruit MAX3185 Library by Adfruit
 */
@@ -18,14 +21,17 @@ Adafruit MAX3185 Library by Adfruit
   11->SDI
   12->SDO
   13->CLK
-  3V3->3V3
+  VCC->5V
 */
+
 /*Librerias para GPS6mv2
   TinyGPSPlusPlus by Ress
 */
 #include <TinyGPSPlus.h>
+
 //Encabezado de Funciones
 #include "EncabezadoDeFuncionesOBC.h"
+//Funciones
 #include "FuncionesOBC.h"
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /*................................................................VOID_SETUP.......................................................*/
@@ -49,15 +55,14 @@ void setup(){
   //Funciones
   FunIniciarBME280(Sensor01Bme280);
   FunIniciarINA219(SensorCorriente_Ina219);
-  FunIniciarMAX3185(SensorMAX3185, Serial1);
+  FunIniciarMAX31865(SensorMAX31865);
 } 
 
 void loop() {
   String Data = "";
   //FunComunicacionTeensyTeensy(Serial8);
   // put your main code here, to run repeatedly:
-  Data += /*FunObtenerStringDatosBME280(Sensor01Bme280)+ FunObtenerStringDatosINA219(SensorCorriente_Ina219)+*/FunObtenerStringDatosMAX3185(SensorMAX3185);
-  //FunActivarGPS6mv2(Serial1);
+  Data += FunObtenerStringDatosBME280(Sensor01Bme280)+ FunObtenerStringDatosINA219(SensorCorriente_Ina219)+FunObtenerStringDatosMAX31865(SensorMAX31865) + FunActivarGPS6mv2();
   
   Serial.println(Data);
   delay(1000);
@@ -104,12 +109,13 @@ String FunObtenerStringDatosMAX3185(Adafruit_MAX31865 & thermo){
 }
 */
 /////////////////////////////////////////////////////////////////////////////////
-/*static void printFloat(float val, bool valid, int len, int prec, String cadena, HardwareSerial & Serialx) {
+
+static void printFloat(float val, bool valid, int len, int prec, String &cadena) {
   if (!valid) {
     while (len-- > 1) {
       cadena += "*";
     }
-    Cadena += " ";
+    cadena += " ";
   } else {
     cadena += String(val, prec);
     int vi = abs((int)val);
@@ -122,7 +128,7 @@ String FunObtenerStringDatosMAX3185(Adafruit_MAX31865 & thermo){
   smartDelay(0);
 }
 
-static void printInt(unsigned long val, bool valid, int len, HardwareSerial &Serialx) {
+static void printInt(unsigned long val, bool valid, int len,String & cadena) {
   char sz[32] = "*****************";
   if (valid) {
     sprintf(sz, "%ld", val);
@@ -134,50 +140,51 @@ static void printInt(unsigned long val, bool valid, int len, HardwareSerial &Ser
   if (len > 0) {
     sz[len - 1] = ' ';
   }
-  Serialx.print(sz);
+  cadena += sz;
   smartDelay(0);
 }
 
-static void printDateTime(TinyGPSDate &d, TinyGPSTime &t, HardwareSerial & Serialx) {
+static void printDateTime(TinyGPSDate &d, TinyGPSTime &t, String & cadena) {
   if (!d.isValid()) {
-    Serialx.print(F("********** "));
+    cadena += "********** ";
   } else {
     char sz[32];
     sprintf(sz, "%02d/%02d/%02d ", d.month(), d.day(), d.year());
-    Serialx.print(sz);
+    cadena += sz;
   }
 
   if (!t.isValid()) {
-    Serialx.print(F("******** "));
+    cadena += "******** ";
   } else {
     char sz[32];
     sprintf(sz, "%02d:%02d:%02d ", t.hour(), t.minute(), t.second());
-    Serialx.print(sz);
+    cadena += sz;
   }
 
-  printInt(d.age(), d.isValid(), 5, Serialx);
+  printInt(d.age(), d.isValid(), 5, cadena);
   smartDelay(0);
 }
 
-static void printStr(const char *str, int len, HardwareSerial & Serialx) {
+static void printStr(const char *str, int len, String & cadena) {
   int slen = strlen(str);
   for (int i = 0; i < len; ++i) {
-    Serialx.print(i < slen ? str[i] : ' ');
+    cadena += (i < slen ? str[i] : ' ');
   }
   smartDelay(0);
 }
-void FunActivarGPS6mv2(HardwareSerial & Serialx)
+String FunActivarGPS6mv2()
 {
-  printInt(gps.satellites.value(), gps.satellites.isValid(), 5, Serialx);
-  printFloat(gps.hdop.hdop(), gps.hdop.isValid(), 6, 1, Serialx);
-  printFloat(gps.location.lat(), gps.location.isValid(), 11, 6, Serialx);
-  printFloat(gps.location.lng(), gps.location.isValid(), 12, 6, Serialx);
-  printInt(gps.location.age(), gps.location.isValid(), 5, Serialx);
-  printDateTime(gps.date, gps.time, Serialx);
-  printFloat(gps.altitude.meters(), gps.altitude.isValid(), 7, 2,  Serialx);
-  printFloat(gps.course.deg(), gps.course.isValid(), 7, 2, Serialx);
-  printFloat(gps.speed.kmph(), gps.speed.isValid(), 6, 2, Serialx);
-  printStr(gps.course.isValid() ? TinyGPSPlus::cardinal(gps.course.deg()) : "*** ", 6, Serialx);
+  String cadena = "";
+  printInt(gps.satellites.value(), gps.satellites.isValid(), 5, cadena);
+  printFloat(gps.hdop.hdop(), gps.hdop.isValid(), 6, 1, cadena);
+  printFloat(gps.location.lat(), gps.location.isValid(), 11, 6, cadena);
+  printFloat(gps.location.lng(), gps.location.isValid(), 12, 6, cadena);
+  printInt(gps.location.age(), gps.location.isValid(), 5, cadena);
+  printDateTime(gps.date, gps.time, cadena);
+  printFloat(gps.altitude.meters(), gps.altitude.isValid(), 7, 2,  cadena);
+  printFloat(gps.course.deg(), gps.course.isValid(), 7, 2, cadena);
+  printFloat(gps.speed.kmph(), gps.speed.isValid(), 6, 2, cadena);
+  printStr(gps.course.isValid() ? TinyGPSPlus::cardinal(gps.course.deg()) : "*** ", 6, cadena);
 
   unsigned long distanceKmToLondon =
     (unsigned long)TinyGPSPlus::distanceBetween(
@@ -185,7 +192,7 @@ void FunActivarGPS6mv2(HardwareSerial & Serialx)
       gps.location.lng(),
       LONDON_LAT, 
       LONDON_LON) / 1000;
-  printInt(distanceKmToLondon, gps.location.isValid(), 9, Serialx);
+  printInt(distanceKmToLondon, gps.location.isValid(), 9, cadena);
 
   double courseToLondon =
     TinyGPSPlus::courseTo(
@@ -194,20 +201,19 @@ void FunActivarGPS6mv2(HardwareSerial & Serialx)
       LONDON_LAT, 
       LONDON_LON);
 
-  printFloat(courseToLondon, gps.location.isValid(), 7, 2, Serialx);
+  printFloat(courseToLondon, gps.location.isValid(), 7, 2, cadena);
 
   const char *cardinalToLondon = TinyGPSPlus::cardinal(courseToLondon);
 
-  printStr(gps.location.isValid() ? cardinalToLondon : "*** ", 6, Serialx);
+  printStr(gps.location.isValid() ? cardinalToLondon : "*** ", 6, cadena);
 
-  printInt(gps.charsProcessed(), true, 6, Serialx);
-  printInt(gps.sentencesWithFix(), true, 10, Serialx);
-  printInt(gps.failedChecksum(), true, 9, Serialx);
-  Serialx.println();
+  printInt(gps.charsProcessed(), true, 6, cadena);
+  printInt(gps.sentencesWithFix(), true, 10, cadena);
+  printInt(gps.failedChecksum(), true, 9, cadena);
+  cadena += "\n";
 
   smartDelay(1000);
 
   if ( millis() > 5000 && gps.charsProcessed() < 10 ) Serial.println(F("No GPS data received: check wiring"));
-  
+  return cadena;
 }
-*/

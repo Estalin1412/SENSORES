@@ -1,9 +1,15 @@
 /*--------------------------------------------------------------------VARIABLES------------------------------------------------------------*/
+//Para MAX31865
+#define CS_PIN 10
+#define DI_PIN 11
+#define DO_PIN 12
+#define CLK_PIN 13
+
+#define RREF 430.0 // Reference resistor value for PT100
+#define RNOMINAL 100.0 // Nominal resistance at 0 degrees Celsius for PT100
+
 //Para BME280
 #define SEALEVELPRESSURE_HPA ( 1013.25)
-//Para INA219
-#define RREF 430.0
-#define RNOMINAL 100.0
 //Para GPS
 static const double LONDON_LAT = 51.508131, LONDON_LON = -0.128002;
 /*Definimos objetos*/
@@ -13,8 +19,8 @@ Adafruit_INA219 SensorCorriente_Ina219;
 //Objeto de INA219
 Adafruit_BME280 Sensor01Bme280;
 
-//Objeto de ina219
-Adafruit_MAX31865 SensorMAX3185 = Adafruit_MAX31865(10);
+//Objeto de MAX31865
+Adafruit_MAX31865 SensorMAX31865 = Adafruit_MAX31865(CS_PIN, DI_PIN, DO_PIN, CLK_PIN);
 
 //Objeto de GPS
 TinyGPSPlus gps;
@@ -29,23 +35,20 @@ void FunObtenerDatosINA219( Adafruit_INA219 &  ina219);
 
 void FunIniciarINA219(Adafruit_INA219 & ina219, HardwareSerial &);
 void FunObtenerDatosINA219( Adafruit_INA219 &  ina219, HardwareSerial &);
+
+String FunObtenerStringDatosINA219( Adafruit_INA219 &  ina219);
 //Prototipos de BME280
 void FunIniciarBME280(Adafruit_BME280 & bme);
 void FunObtenerDatosBME280(Adafruit_BME280 & bme);
 
 void FunIniciarBME280(Adafruit_BME280 & bme, HardwareSerial &);
 void FunObtenerDatosBME280(Adafruit_BME280 & bme, HardwareSerial &);
-//Prototipos de MAX3185
-void FunIniciarMAX3185(Adafruit_MAX31865 & thermo);
-void FunObtenerDatosMAX3185(Adafruit_MAX31865 & thermo);
 
-void FunIniciarMAX3185(Adafruit_MAX31865 & thermo, HardwareSerial &);
-void FunObtenerDatosMAX3185(Adafruit_MAX31865 & thermo, HardwareSerial &);
+String FunObtenerStringDatosBME280(Adafruit_BME280 & bme);
+//Prototipos de MAX3185
+void FunIniciarMAX31865(Adafruit_MAX31865 & thermo);
+String FunObtenerStringDatosMAX31865(Adafruit_MAX31865 & thermo);
 //Prototipos de GPS
-static void printStr(const char *str, int len);
-static void printDateTime(TinyGPSDate &d, TinyGPSTime &t);
-static void printFloat(float val, bool valid, int len, int prec);
-static void printInt(unsigned long val, bool valid, int len);
 static void smartDelay(unsigned long ms);
 
 static void printStr(const char *str, int len, HardwareSerial &);
