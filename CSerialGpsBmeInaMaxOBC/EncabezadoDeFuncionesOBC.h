@@ -26,7 +26,6 @@ Adafruit_MAX31865 SensorMAX31865 = Adafruit_MAX31865(CS_PIN, DI_PIN, DO_PIN, CLK
 TinyGPSPlus gps;
 /*-----------------------------------------PROTOTIPOS DE FUNCIONES-------------------------------------------------------------------------*/
 //Prototipos de INA219
-void FunIniciarINA219(Adafruit_INA219 & ina219);
 /*
 Verificación de conexion; se usa wire2
 Calibra datos para 5V
@@ -49,6 +48,7 @@ String FunObtenerStringDatosBME280(Adafruit_BME280 & bme);
 void FunIniciarMAX31865(Adafruit_MAX31865 & thermo);
 String FunObtenerStringDatosMAX31865(Adafruit_MAX31865 & thermo);
 //Prototipos de GPS
+String FunObtenerStringDatosGPS6mv2();
 static void smartDelay(unsigned long ms);
 
 static void printStr(const char *str, int len, HardwareSerial &);
