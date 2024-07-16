@@ -1,9 +1,10 @@
 /*-------------------------------------------------Funciones-para-MAX3185------------------------------------------------------------------*/
 void FunIniciarMAX31865(Adafruit_MAX31865 & thermo){
-  //Initialize the MAX31865 and set the wire configuration
-thermo.begin(MAX31865_3WIRE); // Use MAX31865_2WIRE or MAX31865_4WIRE 2 cables y 4 cables respectivamente
+  //Arranca para la lectura de datos para tres cables
+thermo.begin(MAX31865_3WIRE); // Use MAX31865_2WIRE or MAX31865_4WIRE; 2 cables y 4 cables respectivamente
 return ;
 }
+
 String FunObtenerStringDatosMAX31865(Adafruit_MAX31865 & thermo){
   String datos;
   // Read the raw RTD value
@@ -19,6 +20,7 @@ datos += "Temperature: " + String(temperature) + ",";// °C
 
 return datos;
 }
+
 /*----------------------------------FuncionesParaIna219--------------------------------------------------------------------*/
 void FunIniciarINA219(Adafruit_INA219 & ina219){
   // Wire2.setSCL(24);
@@ -47,6 +49,7 @@ String FunObtenerStringDatosINA219( Adafruit_INA219 &  ina219){
   //datos += "Power: " + String(power_mW) + ",";               //" mW\n";
   return datos;
 }
+
 /*-------------------------------------------FuncionesParaBME280-----------------------------------------------------*/
 void FunIniciarBME280(Adafruit_BME280 & bme){
   while(! bme.begin(0x76, &Wire2)) delay(10);
@@ -235,6 +238,7 @@ String FunObtenerStringDatosACS712( ACS712 & ACS){
   String cadena = String(ACS.mA_DC(),1);
   return cadena;
 }
+
 //////////////////////////////////////////////////////////
 //FUNCIONES CUALQUIERA
 void FuncionCorregirCaracter(String & cadena, int tam){

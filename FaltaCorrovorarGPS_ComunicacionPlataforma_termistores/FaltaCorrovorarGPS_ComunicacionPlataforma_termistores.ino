@@ -37,4 +37,5 @@ void loop() {
   FuncionEscribirEnSDcard(Archivo, Data);
   FuncionLeerEnSDcard(Archivo);
   delay(1000);
+  Serial1.print(Data);
 }

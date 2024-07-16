@@ -28,6 +28,7 @@ TinyGPSPlus gps;
 ACS712  SensorACS712(23, 5.0, 1023, 100);
 //  ESP 32 example (might requires resistors to step down the logic voltage)
 //  ACS712  ACS(25, 3.3, 4095, 185);
+
 /*-----------------------------------------PROTOTIPOS DE FUNCIONES-------------------------------------------------------------------------*/
 //Prototipos de INA219
 /*
