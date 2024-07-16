@@ -10,6 +10,12 @@
 
 //Para BME280
 #define SEALEVELPRESSURE_HPA ( 1013.25)
+
+//Para termistores
+#define Resolucion 3.3/1023
+#define R0 114000
+#define T0 300.15
+#define B 3950
 //Para GPS
 static const double LONDON_LAT = 51.508131, LONDON_LON = -0.128002;
 //Para SDcard
@@ -35,6 +41,16 @@ File Archivo;
 //  ESP 32 example (might requires resistors to step down the logic voltage)
 //  ACS712  ACS(25, 3.3, 4095, 185);
 
+/*Variables para termistor */
+#define Resolucion 3.3/1023
+#define R0 114000
+#define T0 300.15
+#define B 3950
+float resTer1 = 0;
+float Volt1 = 0;
+float T_1 = 0;
+
+
 /*-----------------------------------------PROTOTIPOS DE FUNCIONES-------------------------------------------------------------------------*/
 //Prototipos de INA219
 /*
@@ -59,6 +75,9 @@ static void printStr(const char *str, int len, String &);
 static void printDateTime(TinyGPSDate &d, TinyGPSTime &t, String &);
 static void printFloat(float val, bool valid, int len, int prec, String &);
 static void printInt(unsigned long val, bool valid, int len, String &);
+
+//Funcion para termistores
+String FunObtnerStirngDatoTermistor(int  Termocupla1);
 
 //Prototipos comunicacion entre teensy
 String FunObtenerStringDatosComunicacionTeensyTeensy(HardwareSerial &Serialx);

@@ -16,16 +16,20 @@ void setup(){
   
   //Para BME280
   Wire2.begin();
+
+  /*
   //Para ACS712
   FunIniciarACS712(SensorACS712);
   //Funciones
   FunIniciarBME280(Sensor01Bme280);
   FunIniciarINA219(SensorCorriente_Ina219);
   FunIniciarMAX31865(SensorMAX31865);
+  */
 } 
 
 void loop() {
   String Data = "";
+  /*
   //FunComunicacionTeensyTeensy(Serial8);
   // put your main code here, to run repeatedly:
   Data += FunObtenerStringDatosMAX31865(SensorMAX31865) + "\n" + 
@@ -33,9 +37,12 @@ void loop() {
   FunObtenerStringDatosBME280(Sensor01Bme280)+ "\n" +
   FunObtenerStringDatosGPS6mv2() + "\n";
   Data += FunObtenerStringDatosACS712(SensorACS712);
+  Data += FunObtnerStirngDatoTermistor(15) + FunObtnerStirngDatoTermistor(16) + FunObtnerStirngDatoTermistor(17) + FunObtnerStirngDatoTermistor(18) + FunObtnerStirngDatoTermistor(19) + FunObtnerStirngDatoTermistor(20);
   Serial1.print(Data);
   FuncionEscribirEnSDcard(Archivo, Data);
   FuncionLeerEnSDcard(Archivo);
+  */
+  Data += FunObtenerStringDatosGPS6mv2();
   delay(1000);
-  Serial1.print(Data);
+  Serial.println(Data);
 }
