@@ -26,6 +26,9 @@ Adafruit_MAX31865 SensorMAX31865 = Adafruit_MAX31865(CS_PIN, DI_PIN, DO_PIN, CLK
 TinyGPSPlus gps;
 //Objeto ACS712
 ACS712  SensorACS712(23, 5.0, 1023, 100);
+//Objeto de archivo en SDcard
+File Archivo;
+const int chipSelect = BUILTIN_SDCARD;
 //  ESP 32 example (might requires resistors to step down the logic voltage)
 //  ACS712  ACS(25, 3.3, 4095, 185);
 /*-----------------------------------------PROTOTIPOS DE FUNCIONES-------------------------------------------------------------------------*/
@@ -53,9 +56,12 @@ static void printDateTime(TinyGPSDate &d, TinyGPSTime &t, String &);
 static void printFloat(float val, bool valid, int len, int prec, String &);
 static void printInt(unsigned long val, bool valid, int len, String &);
 //Prototipos comunicacion entre teensy
-String FunObtenerStringDatosComunicacionTeensyTeensy(HardwareSerial &Serialx)
+String FunObtenerStringDatosComunicacionTeensyTeensy(HardwareSerial &Serialx);
 //Prototipos para corriente
 void FunIniciarACS712(ACS712 & ACS);
 String FunObtenerStringDatosACS712( ACS712 & ACS);
 //FUNCIONE CREADAS PARA FACILITAR OPERACIONES
 void FuncionCorregirCaracter(String & cadena, int tam);
+// Para  guardar en SDcard
+void FuncionLeerEnSDcard(File & myFile);
+void FuncionEscribirEnSDcard(File & myFile, String messenger);
