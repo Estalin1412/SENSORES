@@ -18,3 +18,48 @@ void loop() {
     Serial.println(line);
   }
 }
+
+///////////////////////////////////////////////////////////////////////////////////////
+int contarComandos(String data, char separador) {
+  int contador = 1; // Iniciamos en 1 porque el último elemento no tiene un delimitador después de él.
+  for (int i = 0; i < data.length(); i++) {
+    if (data.charAt(i) == separador) {
+      contador++;
+    }
+  }
+  return contador;
+}
+
+
+void splitString(String data, char separador, String* outputArray, int size){
+  
+  int i = 0;
+  int endIndex = data.indexOf(separador);
+  int j = 0;
+
+  int end = data.indexOf("\n");
+  while (endIndex >= 0 && endIndex <= end) {
+    outputArray[j] = data.substring(i, endIndex);
+    j++;
+    i = endIndex + 1;
+    endIndex = data.indexOf(separador, i);
+    
+  }
+
+}
+
+}
+void splitString(String data, char separador, String* outputArray, int size) {
+  int i = 0;
+  int endIndex = data.indexOf(separador);
+  int j = 0;
+
+  while (endIndex >= 0) {
+    outputArray[j] = data.substring(i, endIndex);
+    j++;
+    i = endIndex + 1;
+    endIndex = data.indexOf(separador, i);
+  }
+  // Asegurarse de añadir la última parte del string
+  outputArray[j] = data.substring(i);
+}
