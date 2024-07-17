@@ -77,7 +77,11 @@ static void printFloat(float val, bool valid, int len, int prec, String &);
 static void printInt(unsigned long val, bool valid, int len, String &);
 
 //Funcion para termistores
-String FunObtnerStirngDatoTermistor(int  Termocupla1);
+/*
+  Entrada: Pin de activación 15 -20
+  Salida: String del valor de temperatura de Termistor
+*/
+String FunObtnerStirngDatoTermistor(int  Termocupla[]);
 
 //Prototipos comunicacion entre teensy
 String FunObtenerStringDatosComunicacionTeensyTeensy(HardwareSerial &Serialx);
@@ -92,3 +96,9 @@ void FuncionCorregirCaracter(String & cadena, int tam);
 // Para  guardar en SDcard
 void FuncionLeerEnSDcard(File & myFile);
 void FuncionEscribirEnSDcard(File & myFile, String messenger);
+
+//Para HeatingPad/
+/*
+Entravada: Valor de voltage al que quieres que sea la señal PWN 0 -3.3V
+*/
+void funPWMParaHeatinPad(float valorVoltage);

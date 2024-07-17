@@ -1,4 +1,8 @@
 #include "LibreriasOBC.h"
+
+int PinesTermistor[] = {15 , 16, 17, 18, 19, 20};
+
+float Termistores[6] = {0};
 /*................................................................VOID_SETUP.......................................................*/
 void setup(){ 
   // put your setup code here, to run once:
@@ -16,7 +20,9 @@ void setup(){
   
   //Para BME280
   Wire2.begin();
-
+  //Para HeatingPad
+  pinMode(2, OUTPUT);
+  analogWriteResolution(12);
   /*
   //Para ACS712
   FunIniciarACS712(SensorACS712);
@@ -43,6 +49,7 @@ void loop() {
   FuncionLeerEnSDcard(Archivo);
   */
   Data += FunObtenerStringDatosGPS6mv2();
-  delay(1000);
+  funPWMParaHeatinPad(3.3);
+  Data +=  FunObtnerStirngDatoTermistor(PinesTermistor);
   Serial.println(Data);
 }

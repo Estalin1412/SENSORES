@@ -8,10 +8,10 @@ return ;
 String FunObtenerStringDatosMAX31865(Adafruit_MAX31865 & thermo){
   String datos;
   // Read the raw RTD value
-uint16_t rtd = thermo.readRTD();
+//uint16_t rtd = thermo.readRTD();
 
 // Calculate the ratio of the RTD value
-float ratio = rtd / 32768.0;
+//float ratio = rtd / 32768.0;
 
 // Calculate and print the temperature
 float temperature = thermo.temperature(RNOMINAL, RREF);
@@ -196,10 +196,11 @@ String FunObtenerStringDatosComunicacionTeensyTeensy(HardwareSerial &Serialx){
 }
 
 /*--------------------------Funcion_para_termistores------------------------------------------------- */
-String FunObtnerStirngDatoTermistor(int  Termocupla1){
+String FunObtnerStirngDatoTermistor(int Termocupla[]){
 
-  int ReadADC1 = analogRead(Termocupla1);
-
+  String cadena = "";
+  for (int i= 0; i<6; i++){
+  int ReadADC1 = analogRead(Termocupla[i]);
   float T_1 = (ReadADC1*R0)/(1023-ReadADC1);  //Valor a partir de la lectura analógica con el dato convertido a digital
   //float Volt1 = 3.3*resTer1/(resTer1 + R0);      // voltaje calculado a partir del calculo de la resistencia es igual a ReadADC32*Resolucion
   T_1 =T_1/R0;
@@ -208,8 +209,11 @@ String FunObtnerStirngDatoTermistor(int  Termocupla1){
   T_1 += 1.0 / T0;
   T_1 = 1.0 / T_1;
   T_1 -= 273.15;
+  cadena += String(T_1) + ",";
+  }
 
-  return String(T_1);
+
+  return cadena;
 }
 /*--------------------------------FUNCIONES_PARA_GUARDADO_SDcard--------------------------------------*/
 void FuncionEscribirEnSDcard(File & myFile, String messenger){
@@ -255,6 +259,12 @@ String FunObtenerStringDatosACS712( ACS712 & ACS){
   return cadena;
 }
 
+/*------------------------ParaFuncionesPWm_hEATINGpAD-----------------------------*/
+void funPWMParaHeatinPad(float valorVoltage){
+  int voltage = (valorVoltage/3.3) * 4095;
+  analogWrite(2, voltage);
+  delay(2000);
+}
 //////////////////////////////////////////////////////////
 //FUNCIONES CUALQUIERA
 void FuncionCorregirCaracter(String & cadena, int tam){
