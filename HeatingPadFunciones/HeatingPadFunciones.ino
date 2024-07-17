@@ -24,21 +24,6 @@ String  diccionario[] = {
 "F5x11" 
 };
 
-String cadena[] =
-{
-//EncenderSistema
-"15xF",
-//EncenderMotores
-"F5x01",
-//EncenderHeatingPad1
-"D5x03",
-//EncenderHeatingPad2
-"B5x05",
-//EncenderActuadoresMotores
-"55x0B",
-//Turn rigth 
-"35x0D", 
-}; 
 
 class ControlHeatingPad{
   int Estado = 4095;
@@ -63,22 +48,31 @@ class ControlHeatingPad{
 void setup() {
   Serial.begin(9600);
   pinMode(2, OUTPUT);
-  analogWriteResolution(12); // 12 bits de resolución para una mejor precisión
+  analogWriteResolution(12);
 }
 
 void loop() {
   // Ejemplo de ajuste de frecuencia
-  float valorDeVoltajeQueQuiero = 3.3;
-  int voltage = (valorDeVoltajeQueQuiero/3.3) * 4096;
-  ControlHeatingPad InOutHeating(cadena);
-  analogWrite(2, InOutHeating.getEstado());
-  Serial.println(diccionario[4]);
+  //String Comandos = "15xFF,E5x12,F5x01,E5x02,D5x03,C5x04,B5x05,A5x06,55x0B,45x0C";
+  String Comandos = "15xFF,F5x01,C5x04,B5x05,55x0B";
+  procesarComandos(Comandos);
   delay(2000);
 }
 
-void funPWMParaHeatinPad(float valorVoltage){
+void FunPWMParaHeatinPad(float valorVoltage){
   int voltage = (valorVoltage/3.3) * 4095;
   analogWrite(2, voltage);
-  delay(2000);
 }
+
+
+/////////////////////////////////////////////////////
+
+/*void setup() {
+  Serial.begin(9600);
+  String Comandos = "15xFF,E5x12,F5x01,E5x02,D5x03,C5x04,B5x05,A5x06,55x0B,45x0C";
+
+  procesarComandos(Comandos);
+}
+*/
+ 
 
