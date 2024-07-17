@@ -78,27 +78,47 @@ static void printInt(unsigned long val, bool valid, int len, String &);
 
 //Funcion para termistores
 /*
-  Entrada: Pin de activación 15 -20
+  Entrada: Pin de activación 15 -20("PinesTermistor")
   Salida: String del valor de temperatura de Termistor
 */
-String FunObtnerStirngDatoTermistor(int  Termocupla[]);
+String FunObtenerStringDatosTermistor(int  Termocupla[]);
 
 //Prototipos comunicacion entre teensy
+/*
+  Entrada: Agregar con qué serial se hará la comunicación("Serial8")
+  Salida: String de la cadena del teensy esclavo
+*/
 String FunObtenerStringDatosComunicacionTeensyTeensy(HardwareSerial &Serialx);
 
 //Prototipos para corriente
+/*
+  Entrada: Objeto del ACS712("SensorACS712")
+  Inicia la conexión
+*/
 void FunIniciarACS712(ACS712 & ACS);
+/*
+  Entrada: Objeto del ACS712("SensorACS712")
+  Salida: String de la medida de corriente
+*/
 String FunObtenerStringDatosACS712( ACS712 & ACS);
 
 //FUNCIONE CREADAS PARA FACILITAR OPERACIONES
 void FuncionCorregirCaracter(String & cadena, int tam);
 
 // Para  guardar en SDcard
+/*
+  Entrada: Objeto tipo File ( Archivo)
+  Lee el contenido de el archivo "tst.txt"
+*/
 void FuncionLeerEnSDcard(File & myFile);
+/*
+  Entrada: Objeto tipo File ( Archivo) , String que quieres guardar (Data)
+  Guarda el string en la tarjeta SD
+*/
 void FuncionEscribirEnSDcard(File & myFile, String messenger);
 
 //Para HeatingPad/
 /*
 Entravada: Valor de voltage al que quieres que sea la señal PWN 0 -3.3V
 */
-void funPWMParaHeatinPad(float valorVoltage);
+void funPWMParaHeatingPad(float valorVoltage);

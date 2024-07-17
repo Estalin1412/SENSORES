@@ -3,6 +3,7 @@
 int PinesTermistor[] = {15 , 16, 17, 18, 19, 20};
 
 float Termistores[6] = {0};
+String DatosIna219, DatosMax31865, DatosGps, DatosTermistores, DatosACS712, DatosBme280, CadenaComandos;
 /*................................................................VOID_SETUP.......................................................*/
 void setup(){ 
   // put your setup code here, to run once:
@@ -38,18 +39,20 @@ void loop() {
   /*
   //FunComunicacionTeensyTeensy(Serial8);
   // put your main code here, to run repeatedly:
-  Data += FunObtenerStringDatosMAX31865(SensorMAX31865) + "\n" + 
-  FunObtenerStringDatosINA219(SensorCorriente_Ina219)+ "\n" +
-  FunObtenerStringDatosBME280(Sensor01Bme280)+ "\n" +
-  FunObtenerStringDatosGPS6mv2() + "\n";
+  Data += FunObtenerStringDatosMAX31865(SensorMAX31865) + "\n";
+  Data += FunObtenerStringDatosINA219(SensorCorriente_Ina219)+ "\n";
+  Data += FunObtenerStringDatosBME280(Sensor01Bme280)+ "\n";
+  Data += FunObtenerStringDatosGPS6mv2() + "\n";
   Data += FunObtenerStringDatosACS712(SensorACS712);
-  Data += FunObtnerStirngDatoTermistor(15) + FunObtnerStirngDatoTermistor(16) + FunObtnerStirngDatoTermistor(17) + FunObtnerStirngDatoTermistor(18) + FunObtnerStirngDatoTermistor(19) + FunObtnerStirngDatoTermistor(20);
+  Data += FunObtnerStirngDatoTermistor(PinesTermistor);
+  Data += FunComunicacionTeensyTeensy(Serial8);
   Serial1.print(Data);
   FuncionEscribirEnSDcard(Archivo, Data);
   FuncionLeerEnSDcard(Archivo);
   */
-  Data += FunObtenerStringDatosGPS6mv2();
-  funPWMParaHeatinPad(3.3);
-  Data +=  FunObtnerStirngDatoTermistor(PinesTermistor);
-  Serial.println(Data);
+  FunObtenerStringDatosComunicacionTeensyTeensy(Serial8);
+
+
+  FunPWMParaHeatingPad(3.3);
+  DatosMax31865 = FunObtenerStringDatosMAX31865(SensorMAX31865);
 }

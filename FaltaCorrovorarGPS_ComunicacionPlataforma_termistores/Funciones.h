@@ -196,7 +196,7 @@ String FunObtenerStringDatosComunicacionTeensyTeensy(HardwareSerial &Serialx){
 }
 
 /*--------------------------Funcion_para_termistores------------------------------------------------- */
-String FunObtnerStirngDatoTermistor(int Termocupla[]){
+String FunObtenerStringDatosTermistor(int Termocupla[]){
 
   String cadena = "";
   for (int i= 0; i<6; i++){
@@ -260,7 +260,7 @@ String FunObtenerStringDatosACS712( ACS712 & ACS){
 }
 
 /*------------------------ParaFuncionesPWm_hEATINGpAD-----------------------------*/
-void funPWMParaHeatinPad(float valorVoltage){
+void FunPWMParaHeatingPad(float valorVoltage){
   int voltage = (valorVoltage/3.3) * 4095;
   analogWrite(2, voltage);
   delay(2000);
