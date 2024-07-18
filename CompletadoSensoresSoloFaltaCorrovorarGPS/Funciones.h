@@ -1,19 +1,19 @@
 /*-------------------------------------------------Funciones-para-MAX3185------------------------------------------------------------------*/
+/*@FunIniciarMAX31865
+  Inicia la lectura para la conexión con tres cables
+*/
 void FunIniciarMAX31865(Adafruit_MAX31865 & thermo){
   //Arranca para la lectura de datos para tres cables
 thermo.begin(MAX31865_3WIRE); // Use MAX31865_2WIRE or MAX31865_4WIRE; 2 cables y 4 cables respectivamente
 return ;
 }
-
+/*@FunObtenerStringDatosMAX31865
+  Crea una cadema; sera para la temperatura
+  Se usa método del objeto para obtener temperatura tipo float y guardar
+  Se cambia tipo string y se retorna en cadena
+*/
 String FunObtenerStringDatosMAX31865(Adafruit_MAX31865 & thermo){
-  String datos;
-  // Read the raw RTD value
-//uint16_t rtd = thermo.readRTD();
-
-// Calculate the ratio of the RTD value
-//float ratio = rtd / 32768.0;
-
-// Calculate and print the temperature
+String datos;
 float temperature = thermo.temperature(RNOMINAL, RREF);
 //7 caracteres include (.) y (,)
 datos += String(temperature) + ",";// Temperatura °C
@@ -22,6 +22,10 @@ return datos;
 }
 
 /*----------------------------------FuncionesParaIna219--------------------------------------------------------------------*/
+/*@FunIniciarINA219
+  Espera hasta empesar comunicación en el wire2(pines 24 SCL y 25 SDA)
+  Calibra para que sea de 5V
+*/
 void FunIniciarINA219(Adafruit_INA219 & ina219){
   // Wire2.setSCL(24);
   // Wire2.setSDA(25);
@@ -30,6 +34,12 @@ void FunIniciarINA219(Adafruit_INA219 & ina219){
   ina219.setCalibration_32V_2A();
 
 }
+
+/*@FunObtenerStringDatosINA219
+  Se crea variables para datos
+  Se usa metodos del objeto para leer datos y gaurdar en sus respectivas variables
+  Se cambia a varible string y se devuelve en una cadena
+*/
 String FunObtenerStringDatosINA219( Adafruit_INA219 &  ina219){
   float shuntvoltage = 0;
   float busvoltage = 0;
@@ -51,6 +61,9 @@ String FunObtenerStringDatosINA219( Adafruit_INA219 &  ina219){
 }
 
 /*-------------------------------------------FuncionesParaBME280-----------------------------------------------------*/
+/*@FunIniciarBME280
+  Se espera hasta que haya comunicación   
+*/
 void FunIniciarBME280(Adafruit_BME280 & bme){
   while(! bme.begin(0x76, &Wire2)) delay(10);
   return;
@@ -65,127 +78,25 @@ String FunObtenerStringDatosBME280(Adafruit_BME280 & bme)
   return datos;
 }
 /*------------------------------FUNCIONES-PARA-GPS-gps6mv2--------------------------------------------*/
-static void smartDelay(unsigned long ms) {
+void smartDelay(unsigned long ms) {
   unsigned long start = millis();
   do {
     while (Serial7.available()) {
-    gps.encode(Serial7.read());
+      gps.encode(Serial7.read());
     }
   } while (millis() - start < ms);
 }
 
-static void printFloat(float val, bool valid, int len, int prec, String &cadena) {
-  if (!valid) {
-    cadena += ",";
-  } else {
-    cadena += String(val, prec)+ ",";
-  }
-  smartDelay(0);
-}
-
-static void printInt(unsigned long val, bool valid, int len,String & cadena) {
- if (valid) {
-    cadena += String(val);  // Convierte el entero a String directamente.
-  } else {
-    cadena += "*";  // Indica un valor inválido con un asterisco.
-  }
-  cadena += ",";  // Añade una coma después del número para delimitar los valores.
-  smartDelay(0);  // Continúa alimentando datos GPS durante la pausa.
-}
-
-static void printDateTime(TinyGPSDate &d, TinyGPSTime &t, String & cadena) {
-  if (!d.isValid()) {
-    cadena += "****-**-**,";
-  } else {
-    cadena += String(d.year()) + "-" + String(d.month()) + "-" + String(d.day()) + ",";
-  }
-
-  if (!t.isValid()) {
-    cadena += "**:**:**,";
-  } else {
-    cadena += String(t.hour()) + ":" + String(t.minute()) + ":" + String(t.second()) + ",";
-  }
-
-  // Considerando que printInt ya maneja la validación y añade una coma,
-  // podemos llamar directamente a esa función sin manejo adicional aquí.
-  printInt(d.age(), d.isValid(),5, cadena);
-
-  // No es necesario llamar a smartDelay aquí ya que se debería manejar externamente
-  // en el bucle principal o en otra parte del código que lo requiera.
-}
-
-static void printStr(const char *str, int len, String & cadena) {
-    int slen = strlen(str);
-    // Añadir el texto del string.
-    for (int i = 0; i < slen; ++i) {
-        cadena += str[i];
-    }
-    // Añadir espacios faltantes si el texto es más corto que el largo especificado.
-    for (int i = slen; i < len; ++i) {
-        cadena += ' ';
-    }
-    // Añadir una coma al final para mantener el formato CSV.
-    cadena += ',';
-
-    // No es necesario llamar a smartDelay aquí ya que se debería manejar externamente
-    // en el bucle principal o en otra parte del código que lo requiera.
-}
 String FunObtenerStringDatosGPS6mv2() {
-    String cadena = "";
-r
-    printFloat(gps.location.lat(), gps.location.isValid(), 11, 6, cadena);
-    // Obtener la longitud y validar
-    printFloat(gps.location.lng(), gps.location.isValid(), 12, 6, cadena);
-    // Obtener la edad de los datos de ubicación y validar
-    printInt(gps.location.age(), gps.location.isValid(), 5, cadena);
-    // Obtener la fecha y hora del GPS y validar
-    printDateTime(gps.date, gps.time, cadena);
-    // Obtener la altitud y validar
-    printFloat(gps.altitude.meters(), gps.altitude.isValid(), 7, 2, cadena);
-    // Obtener el rumbo en grados y validar
-    printFloat(gps.course.deg(), gps.course.isValid(), 7, 2, cadena);
-    // Obtener la velocidad en kilómetros por hora y validar
-    printFloat(gps.speed.kmph(), gps.speed.isValid(), 6, 2, cadena);
-    // Obtener el rumbo cardinal y validar
-    printStr(gps.course.isValid() ? TinyGPSPlus::cardinal(gps.course.deg()) : "*** ", 6, cadena);
-
-    // Calcular la distancia a Londres y validar
-    unsigned long distanceKmToLondon =
-        (unsigned long)TinyGPSPlus::distanceBetween(
-            gps.location.lat(),
-            gps.location.lng(),
-            LONDON_LAT, 
-            LONDON_LON) / 1000;
-    printInt(distanceKmToLondon, gps.location.isValid(), 9, cadena);
-
-    // Calcular el curso hacia Londres y validar
-    double courseToLondon =
-        TinyGPSPlus::courseTo(
-            gps.location.lat(),
-            gps.location.lng(),
-            LONDON_LAT, 
-            LONDON_LON);
-    printFloat(courseToLondon, gps.location.isValid(), 7, 2, cadena);
-
-    // Obtener el rumbo cardinal hacia Londres y validar
-    const char *cardinalToLondon = TinyGPSPlus::cardinal(courseToLondon);
-    printStr(gps.location.isValid() ? cardinalToLondon : "*** ", 6, cadena);
-
-    // Procesar estadísticas adicionales del GPS
-
-
-    // Finalizar con un salto de línea
-    cadena += "\n";
-
-    // Espera inteligente antes de la próxima actualización
-    smartDelay(1000);
-
-    // Comprobar si se ha recibido datos GPS
-    if (millis() > 5000 && gps.charsProcessed() < 10) {
-        Serial.println(F("No GPS data received: check wiring"));
-    }
-
-    return cadena;
+  smartDelay(1000);
+  String cadena = "";
+  // Imprime la latitud, longitud, altitud, fecha y hora
+  cadena += String(gps.location.lat(), 4) + ",";
+  cadena += String(gps.location.lng(), 4) + ",";
+  cadena += String(gps.altitude.meters()) + ",";
+  cadena += String(gps.date.month()) + "/" + String(gps.date.day()) + "/" + "24,";
+  cadena += String(gps.time.hour()) + ":" + String(gps.time.minute()) + ":" + String(gps.time.second()) + ",";
+  return cadena;
 }
 
 /*-------------------------FUNCIONES-PARA-COMUNICACION-ENTRE-TEENSYS----------------------------------*/
@@ -200,6 +111,15 @@ String FunObtenerStringDatosComunicacionTeensyTeensy(HardwareSerial &Serialx){
     }
     return "";
 
+}
+String FunObtenerComandosTeensyPlataforma( String & receivedMessage) {
+  int i = 0;
+  while (Serial1.available() > 0 && receivedMessage.length() < 5 && i< 5000) {
+    char receivedChar = Serial1.read();  // Lee un carácter del puerto Serial1
+    receivedMessage += receivedChar;  // Agrega el carácter al mensaje
+    i++;
+  }
+  return receivedMessage;
 }
 
 /*--------------------------Funcion_para_termistores------------------------------------------------- */

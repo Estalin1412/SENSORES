@@ -73,11 +73,6 @@ String FunObtenerStringDatosMAX31865(Adafruit_MAX31865 & thermo);
 String FunObtenerStringDatosGPS6mv2();
 static void smartDelay(unsigned long ms);
 
-static void printStr(const char *str, int len, String &);
-static void printDateTime(TinyGPSDate &d, TinyGPSTime &t, String &);
-static void printFloat(float val, bool valid, int len, int prec, String &);
-static void printInt(unsigned long val, bool valid, int len, String &);
-
 //Funcion para termistores--------------------------------------------------------------------
 /*
   Entrada: Pin de activación 15 -20("PinesTermistor")
@@ -90,6 +85,7 @@ String FunObtenerStringDatosTermistor(int  Termocupla[]);
   Entrada: Agregar con qué serial se hará la comunicación("Serial8")
   Salida: String de la cadena del teensy esclavo
 */
+String FunObtenerComandosTeensyPlataforma( String & receivedMessage);
 String FunObtenerStringDatosComunicacionTeensyTeensy(HardwareSerial &Serialx);
 
 //Prototipos para corriente------------------------------------------------------------------
