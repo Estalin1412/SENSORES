@@ -10,7 +10,7 @@ void setup(){
   Serial8.begin(4800);
   
   //ParaGPS
-  Serial7.begin(4800);
+  Serial7.begin(9600);
   
   //Para BME280
   Wire2.begin();
@@ -30,10 +30,11 @@ void setup(){
 void loop() {
   String Data = "";
   DatosCadenaComandos = "";
-  
+  /*
   DatosCadenaComandos +=  FunObtenerStringDatosComunicacionTeensyTeensy(Serial1);
   FunProcesarComandos(DatosCadenaComandos);
   Serial8.print(DatosCadenaComandos);
+  
   //FunComunicacionTeensyTeensy(Serial8);
   //Cadena de datos segun especidficaciones Nasa
   Data += FunObtenerStringDatosMAX31865(SensorMAX31865);
@@ -49,6 +50,10 @@ void loop() {
   Serial1.print(Data);
   FuncionEscribirEnSDcard(ArchivoSDcard, Data);
   FunControlHeatingPad(Termistores[3], Termistores[4], 2);
+  */
+
+
+
   /*
   DatosMax31865 = FunObtenerStringDatosMAX31865(SensorMAX31865);
   DatosIna219 = FunObtenerStringDatosINA219(SensorCorriente_Ina219);
@@ -58,6 +63,8 @@ void loop() {
   DatosTermistores = FunObtenerStringDatosTermistor(PinesTermistor);
   DatosCadenaTeensySlave = FunObtenerStringDatosComunicacionTeensyTeensy(Serial8);
   */
+  Data += FunObtenerStringDatosGPS6mv2();
+  Serial.println(Data);
   delay(2000);
 }
 

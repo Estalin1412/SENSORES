@@ -69,118 +69,125 @@ static void smartDelay(unsigned long ms) {
   unsigned long start = millis();
   do {
     while (Serial7.available()) {
-      gps.encode(Serial7.read());
+    gps.encode(Serial7.read());
     }
   } while (millis() - start < ms);
 }
 
 static void printFloat(float val, bool valid, int len, int prec, String &cadena) {
   if (!valid) {
-    while (len-- > 1) {
-      cadena += "*";
-    }
-    cadena += " ";
+    cadena += ",";
   } else {
-    cadena += String(val, prec);
-    int vi = abs((int)val);
-    int flen = prec + (val < 0.0 ? 2 : 1); // . y -
-    flen += vi >= 1000 ? 4 : vi >= 100 ? 3 : vi >= 10 ? 2 : 1;
-    for (int i = flen; i < len; ++i) {
-      cadena += " " ;
-    }
+    cadena += String(val, prec)+ ",";
   }
   smartDelay(0);
 }
 
 static void printInt(unsigned long val, bool valid, int len,String & cadena) {
-  char sz[32] = "*****************";
-  if (valid) {
-    sprintf(sz, "%ld", val);
+ if (valid) {
+    cadena += String(val);  // Convierte el entero a String directamente.
+  } else {
+    cadena += "*";  // Indica un valor inválido con un asterisco.
   }
-  sz[len] = 0;
-  for (int i = strlen(sz); i < len; ++i) {
-    sz[i] = ' ';
-  }
-  if (len > 0) {
-    sz[len - 1] = ' ';
-  }
-  cadena += sz;
-  smartDelay(0);
+  cadena += ",";  // Añade una coma después del número para delimitar los valores.
+  smartDelay(0);  // Continúa alimentando datos GPS durante la pausa.
 }
 
 static void printDateTime(TinyGPSDate &d, TinyGPSTime &t, String & cadena) {
   if (!d.isValid()) {
-    cadena += "********** ";
+    cadena += "****-**-**,";
   } else {
-    char sz[32];
-    sprintf(sz, "%02d/%02d/%02d ", d.month(), d.day(), d.year());
-    cadena += sz;
+    cadena += String(d.year()) + "-" + String(d.month()) + "-" + String(d.day()) + ",";
   }
 
   if (!t.isValid()) {
-    cadena += "******** ";
+    cadena += "**:**:**,";
   } else {
-    char sz[32];
-    sprintf(sz, "%02d:%02d:%02d ", t.hour(), t.minute(), t.second());
-    cadena += sz;
+    cadena += String(t.hour()) + ":" + String(t.minute()) + ":" + String(t.second()) + ",";
   }
 
-  printInt(d.age(), d.isValid(), 5, cadena);
-  smartDelay(0);
+  // Considerando que printInt ya maneja la validación y añade una coma,
+  // podemos llamar directamente a esa función sin manejo adicional aquí.
+  printInt(d.age(), d.isValid(),5, cadena);
+
+  // No es necesario llamar a smartDelay aquí ya que se debería manejar externamente
+  // en el bucle principal o en otra parte del código que lo requiera.
 }
 
 static void printStr(const char *str, int len, String & cadena) {
-  int slen = strlen(str);
-  for (int i = 0; i < len; ++i) {
-    cadena += (i < slen ? str[i] : ' ');
-  }
-  smartDelay(0);
+    int slen = strlen(str);
+    // Añadir el texto del string.
+    for (int i = 0; i < slen; ++i) {
+        cadena += str[i];
+    }
+    // Añadir espacios faltantes si el texto es más corto que el largo especificado.
+    for (int i = slen; i < len; ++i) {
+        cadena += ' ';
+    }
+    // Añadir una coma al final para mantener el formato CSV.
+    cadena += ',';
+
+    // No es necesario llamar a smartDelay aquí ya que se debería manejar externamente
+    // en el bucle principal o en otra parte del código que lo requiera.
 }
-String FunObtenerStringDatosGPS6mv2()
-{
-  String cadena = "";
-  printInt(gps.satellites.value(), gps.satellites.isValid(), 5, cadena);
-  printFloat(gps.hdop.hdop(), gps.hdop.isValid(), 6, 1, cadena);
-  printFloat(gps.location.lat(), gps.location.isValid(), 11, 6, cadena);
-  printFloat(gps.location.lng(), gps.location.isValid(), 12, 6, cadena);
-  printInt(gps.location.age(), gps.location.isValid(), 5, cadena);
-  printDateTime(gps.date, gps.time, cadena);
-  printFloat(gps.altitude.meters(), gps.altitude.isValid(), 7, 2,  cadena);
-  printFloat(gps.course.deg(), gps.course.isValid(), 7, 2, cadena);
-  printFloat(gps.speed.kmph(), gps.speed.isValid(), 6, 2, cadena);
-  printStr(gps.course.isValid() ? TinyGPSPlus::cardinal(gps.course.deg()) : "*** ", 6, cadena);
+String FunObtenerStringDatosGPS6mv2() {
+    String cadena = "";
+r
+    printFloat(gps.location.lat(), gps.location.isValid(), 11, 6, cadena);
+    // Obtener la longitud y validar
+    printFloat(gps.location.lng(), gps.location.isValid(), 12, 6, cadena);
+    // Obtener la edad de los datos de ubicación y validar
+    printInt(gps.location.age(), gps.location.isValid(), 5, cadena);
+    // Obtener la fecha y hora del GPS y validar
+    printDateTime(gps.date, gps.time, cadena);
+    // Obtener la altitud y validar
+    printFloat(gps.altitude.meters(), gps.altitude.isValid(), 7, 2, cadena);
+    // Obtener el rumbo en grados y validar
+    printFloat(gps.course.deg(), gps.course.isValid(), 7, 2, cadena);
+    // Obtener la velocidad en kilómetros por hora y validar
+    printFloat(gps.speed.kmph(), gps.speed.isValid(), 6, 2, cadena);
+    // Obtener el rumbo cardinal y validar
+    printStr(gps.course.isValid() ? TinyGPSPlus::cardinal(gps.course.deg()) : "*** ", 6, cadena);
 
-  unsigned long distanceKmToLondon =
-    (unsigned long)TinyGPSPlus::distanceBetween(
-      gps.location.lat(),
-      gps.location.lng(),
-      LONDON_LAT, 
-      LONDON_LON) / 1000;
-  printInt(distanceKmToLondon, gps.location.isValid(), 9, cadena);
+    // Calcular la distancia a Londres y validar
+    unsigned long distanceKmToLondon =
+        (unsigned long)TinyGPSPlus::distanceBetween(
+            gps.location.lat(),
+            gps.location.lng(),
+            LONDON_LAT, 
+            LONDON_LON) / 1000;
+    printInt(distanceKmToLondon, gps.location.isValid(), 9, cadena);
 
-  double courseToLondon =
-    TinyGPSPlus::courseTo(
-      gps.location.lat(),
-      gps.location.lng(),
-      LONDON_LAT, 
-      LONDON_LON);
+    // Calcular el curso hacia Londres y validar
+    double courseToLondon =
+        TinyGPSPlus::courseTo(
+            gps.location.lat(),
+            gps.location.lng(),
+            LONDON_LAT, 
+            LONDON_LON);
+    printFloat(courseToLondon, gps.location.isValid(), 7, 2, cadena);
 
-  printFloat(courseToLondon, gps.location.isValid(), 7, 2, cadena);
+    // Obtener el rumbo cardinal hacia Londres y validar
+    const char *cardinalToLondon = TinyGPSPlus::cardinal(courseToLondon);
+    printStr(gps.location.isValid() ? cardinalToLondon : "*** ", 6, cadena);
 
-  const char *cardinalToLondon = TinyGPSPlus::cardinal(courseToLondon);
+    // Procesar estadísticas adicionales del GPS
 
-  printStr(gps.location.isValid() ? cardinalToLondon : "*** ", 6, cadena);
 
-  printInt(gps.charsProcessed(), true, 6, cadena);
-  printInt(gps.sentencesWithFix(), true, 10, cadena);
-  printInt(gps.failedChecksum(), true, 9, cadena);
-  cadena += "\n";
+    // Finalizar con un salto de línea
+    cadena += "\n";
 
-  smartDelay(1000);
+    // Espera inteligente antes de la próxima actualización
+    smartDelay(1000);
 
-  if ( millis() > 5000 && gps.charsProcessed() < 10 ) Serial.println(F("No GPS data received: check wiring"));
-  return cadena;
+    // Comprobar si se ha recibido datos GPS
+    if (millis() > 5000 && gps.charsProcessed() < 10) {
+        Serial.println(F("No GPS data received: check wiring"));
+    }
+
+    return cadena;
 }
+
 /*-------------------------FUNCIONES-PARA-COMUNICACION-ENTRE-TEENSYS----------------------------------*/
 
 String FunObtenerStringDatosComunicacionTeensyTeensy(HardwareSerial &Serialx){
@@ -212,8 +219,6 @@ String FunObtenerStringDatosTermistor(int Termocupla[]){
   Termistores[i] = T_1;
   cadena += String(T_1) + ",";//Temperatura °C
   }
-
-
   return cadena;
 }
 /*--------------------------------FUNCIONES_PARA_GUARDADO_SDcard--------------------------------------*/

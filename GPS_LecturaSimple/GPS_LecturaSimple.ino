@@ -12,13 +12,18 @@ void setup() {
 
 void loop() {
   // Leer datos del GPS
-  if (Serial7.available()) {
+  String Data = "";
+  if (Serial7.available() ) {
     String line = Serial7.readStringUntil('\n');
     // Imprimir la línea leída en el puerto serial de depuración
+    /*
+    if (line.startsWith("$GNGGA,")) { // Asegurarte de procesar solo el tipo de mensaje deseado
+    Data += FunObtnerStringDatosGps(line);
+    }
+    */
     Serial.println(line);
   }
 }
-
 ///////////////////////////////////////////////////////////////////////////////////////
 int contarComandos(String data, char separador) {
   int contador = 1; // Iniciamos en 1 porque el último elemento no tiene un delimitador después de él.
@@ -31,35 +36,32 @@ int contarComandos(String data, char separador) {
 }
 
 
-void splitString(String data, char separador, String* outputArray, int size){
-  
+void splitString(String data, char separador, String* outputArray){
   int i = 0;
   int endIndex = data.indexOf(separador);
   int j = 0;
 
   int end = data.indexOf("\n");
+
   while (endIndex >= 0 && endIndex <= end) {
     outputArray[j] = data.substring(i, endIndex);
     j++;
     i = endIndex + 1;
-    endIndex = data.indexOf(separador, i);
-    
+    endIndex = data.indexOf(separador, i);  
   }
-
-}
-
-}
-void splitString(String data, char separador, String* outputArray, int size) {
-  int i = 0;
-  int endIndex = data.indexOf(separador);
-  int j = 0;
-
-  while (endIndex >= 0) {
-    outputArray[j] = data.substring(i, endIndex);
-    j++;
-    i = endIndex + 1;
-    endIndex = data.indexOf(separador, i);
-  }
-  // Asegurarse de añadir la última parte del string
   outputArray[j] = data.substring(i);
+}
+
+
+
+String FunObtnerStringDatosGps(String comandos) {
+  if(comandos == "" ) return ""; 
+  String  comandosSeparados[10];
+  splitString(comandos, ',', comandosSeparados);
+  String cadena = "";
+  cadena += comandosSeparados[2] + ",";
+  cadena += comandosSeparados[3] + ",";
+  cadena += comandosSeparados[7] + ",";
+  cadena += comandosSeparados[1] + ",";
+  return cadena;
 }
