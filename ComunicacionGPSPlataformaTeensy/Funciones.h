@@ -114,10 +114,9 @@ String FunObtenerStringDatosComunicacionTeensyTeensy(HardwareSerial &Serialx){
 }
 String FunObtenerComandosTeensyPlataforma( String & receivedMessage) {
   int i = 0;
-  while (Serial1.available() > 0 && receivedMessage.length() < 5 && i< 5000) {
+  while (Serial1.available() > 0 && receivedMessage.length() < 5) {
     char receivedChar = Serial1.read();  // Lee un carácter del puerto Serial1
     receivedMessage += receivedChar;  // Agrega el carácter al mensaje
-    i++;
   }
   return receivedMessage;
 }

@@ -23,7 +23,6 @@ void setup(){
   FunIniciarBME280(Sensor01Bme280);
   FunIniciarINA219(SensorCorriente_Ina219);
   FunIniciarMAX31865(SensorMAX31865);
-  
 
 } 
 
@@ -31,7 +30,26 @@ void loop() {
   //Para reiciar la cadena                                                                                                                                                                                                        
   String Data = "";
   DatosCadenaComandos = "";
-  
+  //Para comuniaccion
+  unsigned long start = millis();
+
+  while (millis() - start < 250) {
+    // Lectura de comandos desde la plataforma
+    if (Serial1.available() > 0 && DatosCadenaComandos.length() <5) {
+      char cad = Serial1.read();
+      DatosCadenaComandos += cad;  // Envío de comandos a la otra Teensy
+    }
+
+    // Lectura de datos desde el GPS
+    if (Serial7.available() > 0) {
+      gps.encode(Serial7.read());
+    }
+  }
+    if (Serial8.available() > 0) {
+      Serial8.println(DatosCadenaComandos);
+      DatosCadenaTeensySlave = Serial8.readStringUntil('\n');
+    }  
+
   //LeerCadena De Comandos
   DatosCadenaComandos +=  FunObtenerComandosTeensyPlataforma(DatosCadenaComandos);
   //Ejecuta Lo Leido En La Cadena
@@ -44,7 +62,7 @@ void loop() {
   Data += FunObtenerStringDatosBME280(Sensor01Bme280);
   Data += FunObtenerStringDatosACS712(SensorACS712);
   //Datos de BNO055
-  Data += FunObtenerStringDatosComunicacionTeensyTeensy(Serial8);
+  Data += Serial8.readStringUntil('\n');
   //DatosTermistor
   Data += FunObtenerStringDatosGPS6mv2();
   Data += FunObtenerStringDatosTermistor(PinesTermistor);
@@ -67,7 +85,6 @@ void loop() {
   */
 
   //Para ver por comunicaionUSB en serial con pc
-  Serial.println(Data);
 }
 
 

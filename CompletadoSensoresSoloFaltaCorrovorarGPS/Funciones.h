@@ -88,7 +88,6 @@ void smartDelay(unsigned long ms) {
 }
 
 String FunObtenerStringDatosGPS6mv2() {
-  smartDelay(1000);
   String cadena = "";
   // Imprime la latitud, longitud, altitud, fecha y hora
   cadena += String(gps.location.lat(), 4) + ",";
