@@ -241,51 +241,30 @@ void splitString(String data, char separador, String* outputArray, int size) {
   outputArray[j] = data.substring(i);
 }
 
-void FunEjecutarComandos(String comando) {
-  if (comando == "15xFF") {
-    // Lógica para apagar todo
-  }/* else if (comando == "E5x12") {
-    Serial.println("Ignition System: Turn everything on");
-    // Lógica para encender todo
-  } else if (comando == "F5x01") {
-    Serial.println("DC Motor Off: Start the motor inside the system");
-    // Lógica para encender el motor DC
-  } else if (comando == "E5x02") {
-    Serial.println("DC Motor On: Shutting down the motor inside the system");
-    // Lógica para apagar el motor DC
-  }*/ else if (comando == "D5x03") {
-    //ApagarHeatingpad1
-    FunPWMParaHeatingPad(0);
-  } else if (comando == "C5x04") {
-    //Encender HeatingPad1
+
+void FunEjecutarComandos(const uint8_t* command) {
+  if (command[0] == 0x15 && command[1] == 0xFF) {
+    //Serial.println("Apagando todo el sistema");
+  } else if (command[0] == 0xE5 && command[1] == 0x12) {
+    //Serial.println("Encendiendo todo el sistema");
+  } else if (command[0] == 0xF5 && command[1] == 0x01) {
+    //Serial.println("Apagando motor DC");
+  } else if (command[0] == 0xE5 && command[1] == 0x02) {
+    //Serial.println("Encendiendo motor DC");
+  } else if (command[0] == 0xD5 && command[1] == 0x03) {
+    FunPWMParaHeatingPad(0.0);
+  } else if (command[0] == 0xC5 && command[1] == 0x04) {
     FunPWMParaHeatingPad(3.3);
-  }/* else if (comando == "B5x05") {
-    Serial.println("Heating Pad 2 Power on: Switch on the heater of the second compartment");
-    // Lógica para encender el calentador del segundo compartimiento
-  } else if (comando == "A5x06") {
-    Serial.println("Heating Pad 2 Power off: Shutdown of the second compartment heater");
-    // Lógica para apagar el calentador del segundo compartimiento
-  } else if (comando == "55x0B") {
-    Serial.println("All actuators on (Heater and Motor): Turn on all payload actuators");
-    // Lógica para encender todos los actuadores
-  } else if (comando == "45x0C") {
-    Serial.println("All actuators off (Heater and Motor): Turn off all payload actuators");
-    // Lógica para apagar todos los actuadores
-  }else if (comando == "35x0D") {
-    Serial.println("Turn Right: Moves the nanosatellite to the right");
-    // Lógica para mover el nanosatélite a la derecha
-  } else if (comando == "25x0E") {
-    Serial.println("Turn Left: Moves the nanosatellite to the left");
-    // Lógica para mover el nanosatélite a la izquierda
-  } else if (comando == "15x0F") {
-    Serial.println("Turn Front: Moves the nanosatellite to the front");
-    // Lógica para mover el nanosatélite al frente
-  } else if (comando == "F5x11") {
-    Serial.println("Turn Back: Moves the nanosatellite to the back");
-    // Lógica para mover el nanosatélite hacia atrás
-  }
-  */else {
-    //No reconoceComandos 
+  } else if (command[0] == 0xB5 && command[1] == 0x05) {
+    //Serial.println("Encendiendo calentador del segundo compartimento");
+  } else if (command[0] == 0xA5 && command[1] == 0x06) {
+    //Serial.println("Apagando calentador del segundo compartimento");
+  } else if (command[0] == 0x55 && command[1] == 0x0B) {
+    //Serial.println("Encendiendo todos los actuadores");
+  } else if (command[0] == 0x45 && command[1] == 0x0C) {
+    //Serial.println("Apagando todos los actuadores");
+  } else {
+    //Serial.println("Comando no reconocido");
   }
 }
 
