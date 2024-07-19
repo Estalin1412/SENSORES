@@ -189,7 +189,6 @@ String FunObtenerStringDatosACS712( ACS712 & ACS){
 void FunPWMParaHeatingPad(float valorVoltage){
   int voltage = (valorVoltage/3.3) * 4095;
   analogWrite(2, voltage);
-  delay(2000);
 }
 //Para controlarHetingpad1
 void FunControlHeatingPad(float temp4 , float temp5, int fetPin){
