@@ -22,7 +22,6 @@ SD by Arduino, SparkFun
 /////////////////////////////////////////////VOID SETUP////////////////////////////////////////
 void setup() {
   // put your setup code here, to run once:
-  Serial.begin(9600);
   //Para comunicación teensy teensy
   Serial1.begin(4800);
   //Para iniciar BME280
@@ -31,8 +30,8 @@ void setup() {
   pinMode(pinHeadtingPad, OUTPUT);
   analogWriteResolution(12);
   //Para encender hetingPad
-  FunPWMParaHeatingPad(3.3, pinHeadtingPad);
-  //Para Iniciar 
+  FunPWMParaHeatingPad(0.0, pinHeadtingPad);
+  //Para Iniciar 5 entradas analógicas
   FunIniciarM102();
 }
 
@@ -41,18 +40,24 @@ void loop() {
   // put your main code here, to run repeatedly:
   data = "";
   dataComandos = "";
-  //Recivir comandos de teemsy maestro
+  //Recibir comandos de teemsy maestro
   if(Serial1.available() > 0)
     dataComandos += Serial1.readStringUntil('\0');
+  //Ejecutar
   FunEjecutarComandos(dataComandos);
   //Obtener datos
+  // Datos de BNO055
+  //Datos Bme280
   data += FunObtenerStringDatosBME280(SensorBme280);
+  //Datos de 3 termistores
   data += FunObtenerStringDatosTermistor(pinesTermistores);
+  //Datos de 5 entradas analógicas
   data += FunObtenerStringDatosM102(pinAN1);
   data += FunObtenerStringDatosM102(pinAN2);
   data += FunObtenerStringDatosM102(pinAN3);
   data += FunObtenerStringDatosM102(pinAN4);
   data += FunObtenerStringDatosM102(pinAN5);
+  //Enviar datos por comunicación Serial
   Serial1.println(data);
 }
 /////////////////////////////////////////FUNCIONES////////////////////////////////////////////////////////////////
