@@ -1,5 +1,4 @@
 #include "LibreriasOBC.h"
-String DatosIna219, DatosMax31865, DatosGps, DatosTermistores, DatosACS712, DatosBme280, DatosCadenaTeensySlave, DatosCadenaComandos;
 /*................................................................VOID_SETUP.......................................................*/
 void setup(){ 
   //Para comunicación entre teensy-plataforma pin 0 y 1 "RS232"
@@ -79,7 +78,7 @@ void loop() {
   //Control de HeatingPad1
   FunControlHeatingPad(Termistores[3], Termistores[4], 2);
 
-  /*
+  /*Otra forma de optener data
   DatosMax31865 = FunObtenerStringDatosMAX31865(SensorMAX31865);
   DatosIna219 = FunObtenerStringDatosINA219(SensorCorriente_Ina219);
   DatosBme280 = FunObtenerStringDatosBME280(Sensor01Bme280)+ "\n";

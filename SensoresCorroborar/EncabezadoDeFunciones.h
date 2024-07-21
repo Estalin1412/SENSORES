@@ -51,6 +51,8 @@ File ArchivoSDcard;
 float resTer1 = 0;
 float Volt1 = 0;
 float T_1 = 0;
+//Para los datos
+String DatosIna219, DatosMax31865, DatosGps, DatosTermistores, DatosACS712, DatosBme280, DatosCadenaTeensySlave, DatosCadenaComandos;
 
 
 /*-----------------------------------------PROTOTIPOS DE FUNCIONES-------------------------------------------------------------------------*/
@@ -71,7 +73,6 @@ void FunIniciarMAX31865(Adafruit_MAX31865 & thermo);
 String FunObtenerStringDatosMAX31865(Adafruit_MAX31865 & thermo);
 //Prototipos de GPS---------------------------------------------------------------------------
 String FunObtenerStringDatosGPS6mv2();
-static void smartDelay(unsigned long ms);
 
 //Funcion para termistores--------------------------------------------------------------------
 /*

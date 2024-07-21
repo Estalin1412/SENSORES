@@ -78,14 +78,6 @@ String FunObtenerStringDatosBME280(Adafruit_BME280 & bme)
   return datos;
 }
 /*------------------------------FUNCIONES-PARA-GPS-gps6mv2--------------------------------------------*/
-void smartDelay(unsigned long ms) {
-  unsigned long start = millis();
-  do {
-    while (Serial7.available()) {
-      gps.encode(Serial7.read());
-    }
-  } while (millis() - start < ms);
-}
 
 String FunObtenerStringDatosGPS6mv2() {
   String cadena = "";
@@ -245,24 +237,44 @@ void splitString(String data, char separador, String* outputArray, int size) {
 void FunEjecutarComandos(const uint8_t* command) {
   if (command[0] == 0x15 && command[1] == 0xFF) {
     //Serial.println("Apagando todo el sistema");
+    Serial8.println("15xFF");
   } else if (command[0] == 0xE5 && command[1] == 0x12) {
     //Serial.println("Encendiendo todo el sistema");
+    Serial8.println("E5x12");
   } else if (command[0] == 0xF5 && command[1] == 0x01) {
     //Serial.println("Apagando motor DC");
+    Serial8.println("F5x01");
   } else if (command[0] == 0xE5 && command[1] == 0x02) {
     //Serial.println("Encendiendo motor DC");
+    Serial8.println("E5x02");
   } else if (command[0] == 0xD5 && command[1] == 0x03) {
     FunPWMParaHeatingPad(0.0);
   } else if (command[0] == 0xC5 && command[1] == 0x04) {
     FunPWMParaHeatingPad(3.3);
   } else if (command[0] == 0xB5 && command[1] == 0x05) {
     //Serial.println("Encendiendo calentador del segundo compartimento");
+    Serial8.println("B5x05");
   } else if (command[0] == 0xA5 && command[1] == 0x06) {
     //Serial.println("Apagando calentador del segundo compartimento");
+    Serial8.println("A5x06");
   } else if (command[0] == 0x55 && command[1] == 0x0B) {
     //Serial.println("Encendiendo todos los actuadores");
+    Serial8.println("55x0B");
   } else if (command[0] == 0x45 && command[1] == 0x0C) {
     //Serial.println("Apagando todos los actuadores");
+    Serial8.println("45x0C");
+  }else if (command[0] == 0x35 && command[1] == 0x0D) {
+    //Serial.println("Mover el nanosatélite a la derecha");
+    Serial8.println("35x0D");
+  } else if (command[0] == 0x25 && command[1] == 0x0E ) {
+    //Serial.println("Mover el nanosatélite a la izquierda");
+    Serial8.println("25x0E");
+  } else if (command[0] == 0x15  && command[1] == 0x0F ) {
+    //Serial.println("Mover el nanosatélite al frente");
+    Serial8.println("15x0F");
+  } else if (command[0] == 0xF5 && command[1] == 0x11 ) {
+    //Serial.println("Turn Back: Moves the nanosatellite to the back");
+    Serial8.println("F5x11");
   } else {
     //Serial.println("Comando no reconocido");
   }
